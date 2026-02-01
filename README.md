@@ -22,4 +22,4 @@ That's all I needed anyways.
 Open **Termux** (F-Droid version) and paste this single command. It will install Node.js, download the app, and launch it automatically.
 
 ```bash
-pkg install curl -y && bash <(curl -s [https://raw.githubusercontent.com/vonhoon81/3dsControllerBridge/main/install.sh](https://raw.githubusercontent.com/vonhoon81/3dsControllerBridge/main/install.sh))
+pkg install curl -y && bash <(curl -s https://raw.githubusercontent.com/vonhoon81/3dsControllerBridge/main/install.sh)
