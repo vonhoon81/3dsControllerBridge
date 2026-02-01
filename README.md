@@ -31,4 +31,5 @@ pkg install curl -y && bash <(curl -s https://raw.githubusercontent.com/vonhoon8
 ```bash
 cd 3ds-bridge
 node server.js
+am start -a android.intent.action.VIEW -d http://localhost:3000
  

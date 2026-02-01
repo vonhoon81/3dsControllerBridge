@@ -44,7 +44,3 @@ pkill -f "node server.js"
 node server.js > /dev/null 2>&1 &
 sleep 2
 am start -a android.intent.action.VIEW -d http://localhost:3000
-
-echo ""
-echo "👉 To play later, use the '3DS_Bridge' widget on your home screen!"
-echo "   (Requires Termux:Widget app from F-Droid)"
