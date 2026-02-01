@@ -4,11 +4,15 @@
 ## ❓ Why does this exist?
 While 3DS consoles are great, the controller components are the worst things in 2026. 
 They are not comfortable and simply not built to last.
+
 So, I started looking into ways to use modern controllers with 3DS devices, hopefully using only my phone. 
 But I couldn't find a single Input Redirection app that survived the update to modern Android.
+
 Out of options, I forced Gemini to be my coding slave and we hacked this together.
+
 The result is a lightweight server that runs locally on your phone via Termux. 
 It translates Chrome Gamepad API inputs into UDP packets for the 3DS, complete with a 135° rotation matrix (yes, that was very puzzling) and Hybrid Polarity Logic.
+
 And now it just works, so I share.
 
 ## ✨ Features
