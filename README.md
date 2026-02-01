@@ -22,13 +22,15 @@ That's all I needed anyways.
 Open **Termux** (F-Droid version) and paste this single command. It will install Node.js, download the app, and launch it automatically.
 
 ```bash
-pkg update -y && bash <(curl -s https://raw.githubusercontent.com/vonhoon81/3dsControllerBridge/main/install.sh)```
+pkg update -y && bash <(curl -s https://raw.githubusercontent.com/vonhoon81/3dsControllerBridge/main/install.sh)
+```
 
 --- 
 
 ## Running on Termux
 ```bash
-node ~/3ds-bridge/server.js > /dev/null 2>&1 & sleep 1 && am start -a android.intent.action.VIEW -d http://localhost:3000```
+node ~/3ds-bridge/server.js > /dev/null 2>&1 & sleep 1 && am start -a android.intent.action.VIEW -d http://localhost:3000
+```
 
 ---
 
@@ -43,7 +45,8 @@ node ~/3ds-bridge/server.js > /dev/null 2>&1 & sleep 1 && am start -a android.in
     * Connect a controller to your phone.
     * Open Termux and Run this server
     ```bash 
-     node ~/3ds-bridge/server.js > /dev/null 2>&1 & sleep 1 && am start -a android.intent.action.VIEW -d http://localhost:3000```
+     node ~/3ds-bridge/server.js > /dev/null 2>&1 & sleep 1 && am start -a android.intent.action.VIEW -d http://localhost:3000
+     ```
     * Chrome will open automatically.
     * **Press a button** on your controller to wake it up.
 
