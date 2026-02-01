@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>2DS Pro Link</title>
+    <style>
+        body { background: #111; color: #fff; font-family: sans-serif; text-align: center; padding-top: 40px; }
+        h2 { color: #aaa; margin-bottom: 30px; letter-spacing: 2px; }
+        .input-box { font-size: 18px; padding: 12px; width: 80%; max-width: 300px; text-align: center; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; margin-bottom: 20px; }
+        #status { font-size: 18px; color: #fe0; margin-top: 30px; font-weight: bold; min-height: 24px; }
+        .active { color: #0f0 !important; }
+        .footer { margin-top: 60px; color: #555; font-size: 12px; }
+        a { color: #777; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h2>2DS PRO LINK</h2>
+    
+    <input type="text" id="ip" class="input-box" placeholder="3DS IP Address">
+    
+    <div id="status">CONNECT CONTROLLER...</div>
+
+    <div class="footer">
+        Optimized for Luma3DS & Monster Hunter<br>
+        <a href="#" target="_blank">2DS Pro Link</a>
+    </div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const ipInput = document.getElementById('ip');
+        
+        // CONFIG: 135 Degree Rotation Matrix for C-Stick
+        // This aligns the diagonal hardware sensor with standard controller axes
+        const rotAngle = 135 * (Math.PI / 180); 
+
+        let isBusy = false;
+
+        setInterval(() => {
+            if (isBusy) return;
+
+            const pads = navigator.getGamepads();
+            const pad = pads[0] || pads[1] || pads[2] || pads[3];
+
+            if (!pad) {
+                statusDiv.innerText = "CONNECT CONTROLLER";
+                statusDiv.className = "";
+                return;
+            }
+
+            // --- BUTTONS ---
+            // Start with All bits as 1 (Released)
+            let btns = 0xFFFFFFFF; 
+
+            // 1. Standard Face Buttons (Active Low: 0 = Pressed)
+            if (pad.buttons[0].pressed) btns &= ~(1 << 1); // B
+            if (pad.buttons[1].pressed) btns &= ~(1 << 0); // A
+            if (pad.buttons[2].pressed) btns &= ~(1 << 11); // Y
+            if (pad.buttons[3].pressed) btns &= ~(1 << 10); // X
+            if (pad.buttons[4].pressed) btns &= ~(1 << 9);  // L
+            if (pad.buttons[5].pressed) btns &= ~(1 << 8);  // R
+            if (pad.buttons[9].pressed) btns &= ~(1 << 3); // Start
+            if (pad.buttons[8].pressed) btns &= ~(1 << 2); // Select
+            if (pad.buttons[12].pressed) btns &= ~(1 << 6); // Up
+            if (pad.buttons[13].pressed) btns &= ~(1 << 7); // Down
+            if (pad.buttons[14].pressed) btns &= ~(1 << 5); // Left
+            if (pad.buttons[15].pressed) btns &= ~(1 << 4); // Right
+
+            // 2. Triggers (Hybrid Polarity Fix)
+            // First, FORCE Clear Bits 14/15 to 0 (Released State)
+            btns &= ~(1 << 14); 
+            btns &= ~(1 << 15);
+            
+            // Then, SET to 1 if Pressed (Active High Logic)
+            if (pad.buttons[6].pressed) btns |= (1 << 14); // ZL
+            if (pad.buttons[7].pressed) btns |= (1 << 15); // ZR
+
+            // --- LEFT STICK ---
+            const scale12 = (v) => Math.floor((v + 1) * 2047.5);
+            const cp_val = (scale12(-pad.axes[1]) << 12) | scale12(pad.axes[0]);
+
+            // --- C-STICK (135° ROTATION) ---
+            let rawX = pad.axes[2] || 0;
+            let rawY = pad.axes[3] || 0; 
+            
+            // Deadzone (Prevent Drift)
+            if (Math.abs(rawX) < 0.1) rawX = 0;
+            if (Math.abs(rawY) < 0.1) rawY = 0;
+
+            // Rotation Matrix
+            const rotX = (rawX * Math.cos(rotAngle)) - (rawY * Math.sin(rotAngle));
+            const rotY = (rawX * Math.sin(rotAngle)) + (rawY * Math.cos(rotAngle));
+
+            // Convert to 0-255 (Center 128)
+            let csX = Math.floor(128 + (rotX * 127));
+            let csY = Math.floor(128 + (rotY * 127));
+
+            // Clamp
+            if (csX < 0) csX = 0; if (csX > 255) csX = 255;
+            if (csY < 0) csY = 0; if (csY > 255) csY = 255;
+
+            const cs_val = (csY << 8) | csX; 
+
+            // Visual Feedback
+            statusDiv.innerText = `READY (C-Stick: ${csX}, ${csY})`;
+            statusDiv.className = "active";
+
+            // Send to Server
+            if (ipInput.value.length > 7) {
+                isBusy = true;
+                fetch('/input', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ ip: ipInput.value, btns, cp_val, cs_val })
+                })
+                .then(() => { isBusy = false; })
+                .catch(() => { isBusy = false; statusDiv.innerText = "SEND ERROR"; statusDiv.className = "error"; });
+            }
+        }, 40); // 25fps Update Rate
+    </script>
+</body>
+</html>
