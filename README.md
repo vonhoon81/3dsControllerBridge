@@ -2,9 +2,14 @@
 > A lightweight Node.js bridge to use modern controllers (Switch ProCon tested) on a New 3DS/2DS XL via Luma3DS Input Redirection.
 
 ## ❓ Why does this exist?
-I looked for Input Redirection app to use on Android but have failed to find any that can be installed in modern android device. So I have used Gemini as my coding slave and made this.
-Cleanest method to do this only on the phone was to build a web page which only runs on your local network.
-**3DS Controller Bridge** runs a lightweight server directly on your phone via **Termux**. It reads your controller input via the Chrome Web Gamepad API and fires it straight to the 3DS via UDP. It includes a specific **135° rotation matrix** and **Hybrid Polarity Logic** to ensure your controller works perfectly with zero configuration.
+While 3DS consoles are great, the controller components are the worst things in 2026. 
+They are not comfortable and simply not built to last.
+So, I started looking into ways to use modern controllers with 3DS devices, hopefully using only my phone. 
+But I couldn't find a single Input Redirection app that survived the update to modern Android.
+Out of options, I forced Gemini to be my coding slave and we hacked this together.
+The result is a lightweight server that runs locally on your phone via Termux. 
+It translates Chrome Gamepad API inputs into UDP packets for the 3DS, complete with a 135° rotation matrix (yes, that was very puzzling) and Hybrid Polarity Logic.
+And now it just works, so I share.
 
 ## ✨ Features
 * **Direct UDP Connection:** No PC required. Runs 100% on your phone straight to your custom firmwared 3/2DS.
