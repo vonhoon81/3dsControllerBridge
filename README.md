@@ -22,14 +22,31 @@ That's all I needed anyways.
 Open **Termux** (F-Droid version) and paste this single command. It will install Node.js, download the app, and launch it automatically.
 
 ```bash
-pkg update -y && bash <(curl -s https://raw.githubusercontent.com/vonhoon81/3dsControllerBridge/main/install.sh)
-```
+pkg update -y && bash <(curl -s https://raw.githubusercontent.com/vonhoon81/3dsControllerBridge/main/install.sh)```
 
 --- 
 
 ## Running on Termux
 ```bash
-cd 3ds-bridge
-node server.js
-am start -a android.intent.action.VIEW -d http://localhost:3000
- 
+node ~/3ds-bridge/server.js > /dev/null 2>&1 & sleep 1 && am start -a android.intent.action.VIEW -d http://localhost:3000```
+
+---
+
+## 🎮 How to Use this
+
+1.  **On your 3DS:**
+    * Press `L + Down + Select` to open Rosalina Menu.
+    * Go to `Miscellaneous options` > `Start Input Redirection`.
+    * Note the **IP Address** shown on the top screen.
+
+2.  **On your Phone:**
+    * Connect a controller to your phone.
+    * Open Termux and Run this server
+    ```bash 
+     node ~/3ds-bridge/server.js > /dev/null 2>&1 & sleep 1 && am start -a android.intent.action.VIEW -d http://localhost:3000```
+    * Chrome will open automatically.
+    * **Press a button** on your controller to wake it up.
+
+3.  **Connect:**
+    * Enter the **3DS IP Address** in the box.
+    * Start playing!
